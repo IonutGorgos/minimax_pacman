@@ -1,6 +1,8 @@
 import argparse
 from util import manhattanDistance
 from Pacman import Pacman
+from Ghost import Ghost
+
 
 def make_map(matrix):
     height = 11
@@ -32,14 +34,16 @@ def score(current_score):
 
 
 def position(agent, harta):
+    x = []
     for i in xrange(len(harta)):
         for j in xrange(len(harta[i])):
             if agent == int(harta[i][j]):
                 if agent == 4:
-                    print "PACMAN pos: (" + str(i) + ", " + str(j) + ")"
                     return i, j
                 elif agent == 3:
-                    print "GHOST pos: (" + str(i) + ", " + str(j) + ")"
+                    x.append(i)
+                    x.append(j)
+    return x
 
 
 def find_closest_food(xP, yP):
@@ -57,6 +61,12 @@ def move(x, y, harta):
     return harta
 
 
+def display(agent, x, y):
+    if agent == 4:
+        print "PACMAN pos: (" + str(x) + ", " + str(y) + ")"
+    elif agent == 3:
+        print "GHOST pos: (" + str(x) + ", " + str(y) + ")"
+
 
 
 def main():
@@ -70,16 +80,28 @@ def main():
     data = read_from_file(m)
     harta = make_map(data)
     pacman = Pacman()
+    ghost1 = Ghost()
+    ghost2 = Ghost()
     print_map(harta)
     (pacman.dx, pacman.dy) = position(4, harta)
-    position(3, harta)
+    ghostCoords = position(3, harta)
+    #print ghostCoords
+    (ghost1.dx, ghost1.dy) = ghostCoords[0:2]
+    (ghost2.dx, ghost2.dy) = ghostCoords[2:4]
+    display(4, pacman.dx, pacman.dy)
+    display(3, ghost1.dx, ghost1.dy)
+    display(3, ghost2.dx, ghost2.dy)
+    ghost1.move()
+    display(3, ghost1.dx, ghost1.dy)
+    #print pacman.getScore()
+    #find_closest_food(pacman.dx, pacman.dy)
 
-    print pacman.getScore()
-
-    find_closest_food(pacman.dx, pacman.dy)
     move(pacman.dx, pacman.dy, harta)
+    print
     print_map(harta)
-    position(4, harta)
+    (pacman.dx, pacman.dy) = position(4, harta)
+    display(4, pacman.dx, pacman.dy)
+
 
 if __name__ == "__main__":
     main()
